@@ -100,13 +100,13 @@ export class GoogleSheetsService implements IDataStorage {
     }
   }
 
-  public async deleteWholeData(subSheetName: string): Promise<void> {
+  private async deleteWholeData(subSheetName: string): Promise<void> {
     const payload = { range: subSheetName, spreadsheetId: this.spreadSheetId };
 
     await this.sheetsApi.spreadsheets.values.clear(payload);
   }
 
-  public async deleteSpecificData(subSheetName: string, range: string): Promise<void> {
+  private async deleteSpecificData(subSheetName: string, range: string): Promise<void> {
     const payload = {
       requestBody: { values: [] },
 
