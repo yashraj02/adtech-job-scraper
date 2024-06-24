@@ -1,10 +1,11 @@
 import 'reflect-metadata';
 import { container } from './container';
-import { GcppScraper } from './services/scraper/GcppScraper';
-import { GoogleSheetsService } from './services/storage/GoogleSheetsService';
+import { GcppScraper } from './services/scraper/gcpp-site/GcppScraper';
+import { GoogleSheetsService } from './services/storage/google-sheets/GoogleSheetsService';
 
 export class App {
   private gcppScraper: GcppScraper;
+
   private googleSheetsService: GoogleSheetsService;
 
   constructor() {

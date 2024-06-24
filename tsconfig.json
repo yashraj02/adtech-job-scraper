@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-      "target": "ES2020",
-      "module": "commonjs",
+      "target": "ES6",
+      "module": "NodeNext",
       "strict": true,
       "esModuleInterop": true,
       "skipLibCheck": true,
@@ -9,8 +9,9 @@
       "outDir": "./dist",
       "rootDir": "./src",
       "experimentalDecorators": true,
-      "emitDecoratorMetadata": true
+      "emitDecoratorMetadata": true,
+      "moduleResolution": "nodenext"
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
   }
-  

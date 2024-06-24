@@ -9,7 +9,7 @@ To run this project, ensure you have Node.js installed. You can manage Node.js v
 1. Clone the repository:
 
   ```bash
-  git clone https://github.com/yourusername/adtech-job-scraper.git
+  git clone git@github.com:yashraj02/adtech-job-scraper.git
   ```
 
 2. Navigate to the project directory:

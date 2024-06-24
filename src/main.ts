@@ -1,4 +1,5 @@
-import {App} from './App';
+import { App } from './App';
+import { Logger } from './utils/logger';
 
 async function main() {
   const app = new App();
@@ -6,4 +7,4 @@ async function main() {
   await app.run();
 }
 
-main().catch((error) => console.error('Error: ', error));
+main().catch((error) => Logger.consoleError('Error in main(): ', error));

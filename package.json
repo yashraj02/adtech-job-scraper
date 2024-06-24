@@ -6,7 +6,8 @@
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,html,css,scss,md}\"",
     "lint": "eslint .",
-    "preinstall": "node -v | grep -q 'v20.9.0' || (echo 'You must use Node.js version 20.9.0 for this project.' && exit 1)"
+    "preinstall": "node -v | grep -q 'v20.9.0' || (echo 'You must use Node.js version 20.9.0 for this project.' && exit 1)",
+    "start": "npx tsx src/main.ts"
   },
   "engines": {
     "node": "20.9.0"
@@ -22,15 +23,15 @@
     "eslint": "^8.56.0",
     "globals": "^15.6.0",
     "prettier": "^3.3.2",
+    "typescript": "^5.5.2",
     "typescript-eslint": "^7.13.1"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "googleapis": "^140.0.0",
     "inversify": "^6.0.2",
     "playwright": "^1.44.1",
-    "reflect-metadata": "^0.2.2",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.2"
+    "reflect-metadata": "^0.2.2"
   },
   "husky": {
     "hooks": {
