@@ -1,22 +1,22 @@
 import 'reflect-metadata';
 import { container } from './container';
-import { GcppScraper } from './services/scraper/gcpp-site/GcppScraper';
-import { GoogleSheetsService } from './services/storage/google-sheets/GoogleSheetsService';
+import { GcppScraper } from './services/scraper/browser-automation/gcpp-site/GcppScraper';
+import { WebCrawler } from './services/scraper/browser-automation/gcpp-partner-sites/scraperType/standard/web-crawler/WebCrawler';
 
 export class App {
   private gcppScraper: GcppScraper;
 
-  private googleSheetsService: GoogleSheetsService;
+  private webCrawler: WebCrawler;
 
   constructor() {
     this.gcppScraper = container.get<GcppScraper>(GcppScraper);
 
-    this.googleSheetsService = container.get<GoogleSheetsService>(GoogleSheetsService);
+    this.webCrawler = container.get<WebCrawler>(WebCrawler);
   }
 
   public async run() {
-    const partnerData = await this.gcppScraper.scrapeData();
+    await this.gcppScraper.init();
 
-    await this.googleSheetsService.addAllPartnersDataToSheet(partnerData);
+    await this.webCrawler.crawl();
   }
 }

@@ -5,7 +5,7 @@ export interface RangeOfData {
   endColumnIndex?: number;
 }
 
-//------ DecorateSheets.ts ------
+//------ SheetDecorator.ts ------
 interface Range extends RangeOfData {
   sheetId: number;
 }

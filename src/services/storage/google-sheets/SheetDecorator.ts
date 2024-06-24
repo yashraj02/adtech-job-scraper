@@ -2,8 +2,30 @@ import { sheets_v4 } from 'googleapis';
 import { Utils } from './Utils';
 import { BoldHeader, AddBorder, RangeOfData, AutoResizeCells, CenterTextInCells } from './models/google-sheet-models';
 
-export class DecorateSheets {
-  public static getConfigForBoldHeaders(subSheetId: number): BoldHeader {
+export class SheetDecorator {
+  public static async init(sheets: sheets_v4.Sheets, subSheetName: string, spreadsheetId: string, data: string[][]) {
+    const rangeOfData = Utils.getRangeOfData(data, true);
+
+    const subSheetId = await Utils.getSubSheetIdByName(sheets, subSheetName, spreadsheetId);
+
+    if (subSheetId === null || subSheetId === undefined) {
+      return;
+    }
+
+    const boldHeadersConfig = this.getConfigForBoldHeaders(subSheetId);
+
+    const autoResizeConfig = this.getConfigForAutoResize(subSheetId);
+
+    const centerTextConfig = this.getConfigForCenterTextInCells(subSheetId, rangeOfData);
+
+    const addBorderConfig = this.getConfigForAddingBorderToCells(subSheetId, rangeOfData);
+
+    const requests = [boldHeadersConfig, autoResizeConfig, centerTextConfig, addBorderConfig];
+
+    await Utils.createSpreadSheet(sheets, spreadsheetId, requests);
+  }
+
+  private static getConfigForBoldHeaders(subSheetId: number): BoldHeader {
     return {
       repeatCell: {
         range: {
@@ -23,7 +45,7 @@ export class DecorateSheets {
     };
   }
 
-  public static getConfigForAutoResize(subSheetId: number): AutoResizeCells {
+  private static getConfigForAutoResize(subSheetId: number): AutoResizeCells {
     return {
       // Auto-resize columns
       autoResizeDimensions: {
@@ -37,7 +59,7 @@ export class DecorateSheets {
     };
   }
 
-  public static getConfigForCenterTextInCells(subSheetId: number, rangeOfData: RangeOfData): CenterTextInCells {
+  private static getConfigForCenterTextInCells(subSheetId: number, rangeOfData: RangeOfData): CenterTextInCells {
     // Center text in cells A1 to C3
     return {
       repeatCell: {
@@ -56,7 +78,7 @@ export class DecorateSheets {
     };
   }
 
-  public static getConfigForAddingBorderToCells(subSheetId: number, rangeOfData: RangeOfData): AddBorder {
+  private static getConfigForAddingBorderToCells(subSheetId: number, rangeOfData: RangeOfData): AddBorder {
     // Add border to cells A1 to C3
     return {
       updateBorders: {
@@ -96,36 +118,5 @@ export class DecorateSheets {
         },
       },
     };
-  }
-
-  public static async decorateSheet(
-    sheets: sheets_v4.Sheets,
-    subSheetName: string,
-    spreadsheetId: string,
-    rangeOfData: RangeOfData,
-  ) {
-    const subSheetId = await Utils.getSubSheetIdByName(sheets, subSheetName, spreadsheetId);
-
-    if (subSheetId === null || subSheetId === undefined) {
-      return;
-    }
-
-    const boldHeadersConfig = this.getConfigForBoldHeaders(subSheetId);
-
-    const autoResizeConfig = this.getConfigForAutoResize(subSheetId);
-
-    const centerTextConfig = this.getConfigForCenterTextInCells(subSheetId, rangeOfData);
-
-    const addBorderConfig = this.getConfigForAddingBorderToCells(subSheetId, rangeOfData);
-
-    const requests = [boldHeadersConfig, autoResizeConfig, centerTextConfig, addBorderConfig];
-
-    // Send the batchUpdate request
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId,
-      requestBody: {
-        requests,
-      },
-    });
   }
 }

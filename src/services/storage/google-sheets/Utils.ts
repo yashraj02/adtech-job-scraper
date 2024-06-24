@@ -2,32 +2,16 @@ import { sheets_v4 } from 'googleapis';
 import { RangeOfData } from './models/google-sheet-models';
 
 export class Utils {
-  public static async createSheetIfNotExists(sheets: sheets_v4.Sheets, subSheetName: string, spreadsheetId: string) {
-    // Retrieve the spreadsheet details, including its sheets
-    const spreadsheet = await sheets.spreadsheets.get({
-      spreadsheetId,
-      fields: 'sheets(properties(title))',
-    });
+  public static async getSpreadSheetExistsStatus(
+    sheets: sheets_v4.Sheets,
+    subSheetName: string,
+    spreadsheetId: string,
+  ): Promise<boolean> {
+    const spreadsheet = await sheets.spreadsheets.get({ spreadsheetId, fields: 'sheets(properties(title))' });
 
     const sheetExists = spreadsheet.data.sheets?.some((sheet) => sheet.properties?.title === subSheetName);
 
-    // If the sheet does not exist, create it
-    if (!sheetExists) {
-      await sheets.spreadsheets.batchUpdate({
-        spreadsheetId,
-        requestBody: {
-          requests: [
-            {
-              addSheet: {
-                properties: {
-                  title: subSheetName,
-                },
-              },
-            },
-          ],
-        },
-      });
-    }
+    return !!sheetExists;
   }
 
   public static async getSubSheetIdByName(
@@ -62,5 +46,19 @@ export class Utils {
       startColumnIndex: 0,
       endColumnIndex: data[0].length,
     };
+  }
+
+  public static async createSpreadSheet(sheets: sheets_v4.Sheets, spreadsheetId: string, requests: any[]) {
+    await sheets.spreadsheets.batchUpdate({ spreadsheetId, requestBody: { requests } });
+  }
+
+  public static async createSheetIfNotExists(sheets: sheets_v4.Sheets, subSheetName: string, spreadsheetId: string) {
+    const sheetExists = await this.getSpreadSheetExistsStatus(sheets, subSheetName, spreadsheetId);
+
+    if (sheetExists) return;
+
+    const requests = [{ addSheet: { properties: { title: subSheetName } } }];
+
+    await this.createSpreadSheet(sheets, spreadsheetId, requests);
   }
 }
