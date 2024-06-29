@@ -1,5 +1,6 @@
 import { sheets_v4 } from 'googleapis';
 import { RangeOfData } from './models/google-sheet-models';
+import { Logger } from '../../../utils/logger';
 
 export class Utils {
   public static async getSpreadSheetExistsStatus(
@@ -32,7 +33,8 @@ export class Utils {
       // Return the sheet ID if found
       return sheet?.properties?.sheetId;
     } catch (error) {
-      console.error('Failed to get sheet ID by name:', error);
+      Logger.consoleError('Failed to get sheet ID by name:', error);
+
       return undefined;
     }
   }

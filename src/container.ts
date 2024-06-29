@@ -1,6 +1,6 @@
 import { Container } from 'inversify';
 import { GcppScraper } from './services/scraper/browser-automation/gcpp-site/GcppScraper';
-import { WebCrawler } from './services/scraper/browser-automation/gcpp-partner-sites/scraperType/standard/web-crawler/WebCrawler';
+import { WebCrawler } from './services/scraper/browser-automation/gcpp-partner-sites/scraperType/standard/types/web-crawler/WebCrawler';
 import { GoogleSheetsService } from './services/storage/google-sheets/GoogleSheetsService';
 
 const container = new Container();

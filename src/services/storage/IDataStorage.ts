@@ -7,7 +7,7 @@
 export interface IDataStorage {
   create(data: string[][], target: string, rangeOrQuery?: string): Promise<boolean>;
 
-  read(target: string, rangeOrQuery?: string): Promise<string[][]>;
+  read(target: string, rangeOrQuery?: string): Promise<string[][] | null | undefined>;
 
   update(data: string[][], target: string, rangeOrQuery: string): Promise<boolean>;
 

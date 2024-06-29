@@ -8,9 +8,9 @@ export class Logger {
     }
   }
 
-  public static consoleError(message: string, error: Error) {
+  public static consoleError(message: string, error?: Error) {
     if (process.env.ENABLE_DEBUG_MODE) {
-      console.error(message, error);
+      error ? console.error(message, error) : console.error(message);
     }
   }
 }

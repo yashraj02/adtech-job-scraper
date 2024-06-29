@@ -10,7 +10,7 @@ import { Logger } from '../../../../utils/logger';
 @injectable()
 export class GcppScraper {
   public async init(): Promise<void> {
-    const partnerData = await this.scrapeData();
+    const partnerData = await this.scrapeData(constants.GCPP_URL);
 
     const isDataStored = await this.storeData(partnerData);
 
@@ -19,50 +19,54 @@ export class GcppScraper {
     Logger.consoleLog('GcppScraper data store ' + status);
   }
 
-  private async scrapeData(): Promise<PartnerInfo[]> {
-    const { page, browser } = await BrowserAutomation.navigateTo(constants.GCPP_URL);
+  private async scrapeData(url: string): Promise<PartnerInfo[]> {
+    try {
+      const page = await BrowserAutomation.navigateTo(url);
 
-    const dataForAllPartners = await page.evaluate((constants) => {
-      const allGcppPartnerInfo: PartnerInfo[] = [];
+      const dataForAllPartners = await page.evaluate((constants) => {
+        const allGcppPartnerInfo: PartnerInfo[] = [];
 
-      const allGcppPartners = document.querySelectorAll(constants.SELECTORS.ALL_PARTNER_SELECTOR);
+        const allGcppPartners = document.querySelectorAll(constants.SELECTORS.ALL_PARTNER_SELECTOR);
 
-      allGcppPartners.forEach((gcppPartner) => {
-        const partnerLinks = gcppPartner.querySelectorAll(constants.SELECTORS.PARTNER_LINK_SELECTOR);
+        allGcppPartners.forEach((gcppPartner) => {
+          const partnerLinks = gcppPartner.querySelectorAll(constants.SELECTORS.PARTNER_LINK_SELECTOR);
 
-        const url = (partnerLinks[0] as HTMLAnchorElement)?.href;
+          const url = (partnerLinks[0] as HTMLAnchorElement)?.href;
 
-        let phone = partnerLinks[1]?.textContent?.trim().replace('/s+/g', '') ?? '';
+          let phone = partnerLinks[1]?.textContent?.trim().replace('/s+/g', '') ?? '';
 
-        // Fix-me: one email is coming as "globalpublisherbusines..."
-        let email = partnerLinks[2]?.textContent?.trim().replace('/s+/g', '') ?? '';
+          // Fix-me: one email is coming as "globalpublisherbusines..."
+          let email = partnerLinks[2]?.textContent?.trim().replace('/s+/g', '') ?? '';
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        /** sometimes email is not available hence the order get's swapped i.e email comes in 1st position in partnerLinks array. So its better to check & add 'email' & 'phone' in correct properties */
-        if (emailRegex.test(phone)) {
-          email = phone;
+          /** sometimes email is not available hence the order get's swapped i.e email comes in 1st position in partnerLinks array. So its better to check & add 'email' & 'phone' in correct properties */
+          if (emailRegex.test(phone)) {
+            email = phone;
 
-          phone = '';
-        }
+            phone = '';
+          }
 
-        const partnerInfo = {
-          url,
-          phone,
-          email,
-        };
+          const partnerInfo = {
+            url,
+            phone,
+            email,
+          };
 
-        allGcppPartnerInfo.push(partnerInfo);
-      });
+          allGcppPartnerInfo.push(partnerInfo);
+        });
 
-      return allGcppPartnerInfo;
-    }, constants);
+        return allGcppPartnerInfo;
+      }, constants);
 
-    await BrowserAutomation.closePage(page);
+      await BrowserAutomation.closePage(page);
 
-    await BrowserAutomation.closeBrowser(browser);
+      return dataForAllPartners;
+    } catch (error) {
+      Logger.consoleError('Error while scraping data from ' + url, error as Error);
 
-    return dataForAllPartners;
+      return [];
+    }
   }
 
   private async storeData(partnerData: PartnerInfo[]): Promise<boolean> {
@@ -84,7 +88,7 @@ export class GcppScraper {
 
     const data = [...headers, ...values];
 
-    await dataStorageFactory.create(data, constants.PARTNER_CONTACTS.SHEET_NAME);
+    await dataStorageFactory.create(data, constants.PARTNER_CONTACTS.SUB_SHEET_NAME);
 
     return true;
   }

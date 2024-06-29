@@ -45,7 +45,7 @@ export class GoogleSheetsService implements IDataStorage {
     }
   }
 
-  public async read<T>(subSheetName: string, range?: string): Promise<T[]> {
+  public async read(subSheetName: string, range?: string): Promise<string[][] | null | undefined> {
     try {
       const payload = {
         spreadsheetId: this.spreadSheetId,
@@ -55,7 +55,7 @@ export class GoogleSheetsService implements IDataStorage {
 
       const response = await this.sheetsApi.spreadsheets.values.get(payload);
 
-      return response.data.values as T[];
+      return response.data.values;
     } catch (error) {
       Logger.consoleError('Error while reading data from sheet: ' + subSheetName, error as Error);
 
