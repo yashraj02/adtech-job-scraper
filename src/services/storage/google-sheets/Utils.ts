@@ -33,7 +33,7 @@ export class Utils {
       // Return the sheet ID if found
       return sheet?.properties?.sheetId;
     } catch (error) {
-      Logger.consoleError('Failed to get sheet ID by name:', error);
+      Logger.consoleError('Failed to get sheet ID by name:', error as Error);
 
       return undefined;
     }
