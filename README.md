@@ -2,6 +2,8 @@
 
 This project scrapes job listings from publishing partner websites in the AdTech industry.
 
+[Here's the scraped data](https://docs.google.com/spreadsheets/d/1Jd2TghMmQ0gjsuWiA3zS9ncmY6sY6w5b7uv5LB8tSJ8/edit?gid=1182836915#gid=1182836915)
+
 ## Installation
 
 To run this project, ensure you have Node.js installed. You can manage Node.js versions using [nvm](https://github.com/nvm-sh/nvm).
