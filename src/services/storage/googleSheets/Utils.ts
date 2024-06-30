@@ -39,10 +39,11 @@ export class Utils {
     }
   }
 
-  public static getRangeOfData(data: string[][], shouldAddHeaders: boolean = false): RangeOfData {
+  public static getRangeOfData(data: string[][], subSheetId: number, shouldAddHeaders: boolean = false): RangeOfData {
     const endRowIndex = shouldAddHeaders ? data.length + 1 : data.length;
 
     return {
+      sheetId: subSheetId,
       endRowIndex,
       startRowIndex: 0,
       startColumnIndex: 0,

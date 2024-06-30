@@ -2,9 +2,18 @@ import { google } from 'googleapis';
 import { constants } from './constants';
 import { DataStorageFactory } from '../../../../../../../storage/DataStorageFactory';
 import { STORAGE_TYPE } from '../../../../../../../storage/constants';
+import { PartnerContactsGSheetDataSet } from '../../../../../../../storage/googleSheets/models/google-sheet-models';
 
-export class SiteList {
-  public static async getSiteList(): Promise<string[]> {
+export class PartnerContacts {
+  public static async getUrlAsDimension(): Promise<string[]> {
+    const data = await this.getDataWithAllDimensions();
+
+    const siteList = this.removeJunkAndFilterOnlyArrayOfSites(data);
+
+    return siteList;
+  }
+
+  public static async getDataWithAllDimensions(): Promise<PartnerContactsGSheetDataSet> {
     const auth = new google.auth.GoogleAuth({
       keyFile: constants.GOOGLE_SHEET_CONFIG.PATH_TO_CREDS,
       scopes: [constants.GOOGLE_SHEET_CONFIG.SPREAD_SHEET_URL],
@@ -19,18 +28,18 @@ export class SiteList {
       spreadSheetId,
     });
 
-    const data = await dataStorageFactory.read(subSheetName);
+    const data: PartnerContactsGSheetDataSet = (await dataStorageFactory.read(
+      subSheetName,
+    )) as PartnerContactsGSheetDataSet;
 
     if (data === null || data === undefined) {
-      return [];
+      throw new Error('No data found in the Partner Contacts sheet');
     }
 
-    const siteList = SiteList.removeJunkAndFilterOnlyArrayOfSites(data);
-
-    return siteList;
+    return data;
   }
 
-  private static removeJunkAndFilterOnlyArrayOfSites(siteList: string[][]): string[] {
+  private static removeJunkAndFilterOnlyArrayOfSites(siteList: PartnerContactsGSheetDataSet): string[] {
     return siteList.map((site) => site[0]);
   }
 }

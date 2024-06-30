@@ -1,12 +1,16 @@
-import { sheets_v4 } from 'googleapis';
 import { Utils } from './Utils';
+import { sheets_v4 } from 'googleapis';
 import { BoldHeader, AddBorder, RangeOfData, AutoResizeCells, CenterTextInCells } from './models/google-sheet-models';
 
 export class SheetDecorator {
   public static async init(sheets: sheets_v4.Sheets, subSheetName: string, spreadsheetId: string, data: string[][]) {
-    const rangeOfData = Utils.getRangeOfData(data, true);
-
     const subSheetId = await Utils.getSubSheetIdByName(sheets, subSheetName, spreadsheetId);
+
+    if (subSheetId === null || subSheetId === undefined) {
+      return;
+    }
+
+    const rangeOfData = Utils.getRangeOfData(data, subSheetId, true);
 
     if (subSheetId === null || subSheetId === undefined) {
       return;
@@ -16,9 +20,9 @@ export class SheetDecorator {
 
     const autoResizeConfig = this.getConfigForAutoResize(subSheetId);
 
-    const centerTextConfig = this.getConfigForCenterTextInCells(subSheetId, rangeOfData);
+    const centerTextConfig = this.getConfigForCenterTextInCells(rangeOfData);
 
-    const addBorderConfig = this.getConfigForAddingBorderToCells(subSheetId, rangeOfData);
+    const addBorderConfig = this.getConfigForAddingBorderToCells(rangeOfData);
 
     const requests = [boldHeadersConfig, autoResizeConfig, centerTextConfig, addBorderConfig];
 
@@ -59,12 +63,11 @@ export class SheetDecorator {
     };
   }
 
-  private static getConfigForCenterTextInCells(subSheetId: number, rangeOfData: RangeOfData): CenterTextInCells {
+  private static getConfigForCenterTextInCells(rangeOfData: RangeOfData): CenterTextInCells {
     // Center text in cells A1 to C3
     return {
       repeatCell: {
         range: {
-          sheetId: subSheetId, // Adjust as necessary
           ...rangeOfData,
         },
         cell: {
@@ -78,14 +81,11 @@ export class SheetDecorator {
     };
   }
 
-  private static getConfigForAddingBorderToCells(subSheetId: number, rangeOfData: RangeOfData): AddBorder {
+  private static getConfigForAddingBorderToCells(rangeOfData: RangeOfData): AddBorder {
     // Add border to cells A1 to C3
     return {
       updateBorders: {
-        range: {
-          sheetId: subSheetId,
-          ...rangeOfData,
-        },
+        range: rangeOfData,
         top: {
           style: 'SOLID',
           width: 1,

@@ -1,4 +1,11 @@
+export type PartnerContactsGSheetHeaderRow = ['URL', 'Phone', 'Email'];
+
+export type PartnerContactsGSheetValues = [url: string, phone: string, email: string];
+
+export type PartnerContactsGSheetDataSet = [PartnerContactsGSheetHeaderRow, ...PartnerContactsGSheetValues[]];
+
 export interface RangeOfData {
+  sheetId: number;
   startRowIndex?: number;
   endRowIndex?: number;
   startColumnIndex?: number;
@@ -6,9 +13,7 @@ export interface RangeOfData {
 }
 
 //------ SheetDecorator.ts ------
-interface Range extends RangeOfData {
-  sheetId: number;
-}
+interface Range extends RangeOfData {}
 
 interface color {
   red: number;

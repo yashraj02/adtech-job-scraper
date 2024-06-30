@@ -2,7 +2,7 @@ export const constants = {
   GCPP_URL: 'https://www.google.com/ads/publisher/partners/find-a-partner/#!?modal_active=none',
 
   GOOGLE_SHEET_CONFIG: {
-    PATH_TO_CREDS: 'src/services/storage/google-sheets/secrets/google-sheets-creds.json',
+    PATH_TO_CREDS: 'src/services/storage/googleSheets/secrets/google_sheets_creds.json',
 
     SPREAD_SHEET_URL: 'https://www.googleapis.com/auth/spreadsheets',
   },
@@ -15,8 +15,6 @@ export const constants = {
 
   // sub-sheet
   PARTNER_CONTACTS: {
-    VALUE_INPUT_OPTION: 'RAW',
-
     SUB_SHEET_NAME: 'Partner Contacts',
 
     HEADERS: [['URL', 'Phone', 'Email']],

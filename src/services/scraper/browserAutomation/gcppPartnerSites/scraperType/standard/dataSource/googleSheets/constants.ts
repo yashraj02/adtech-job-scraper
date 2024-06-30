@@ -1,6 +1,6 @@
 export const constants = {
   GOOGLE_SHEET_CONFIG: {
-    PATH_TO_CREDS: 'src/services/storage/google-sheets/secrets/google-sheets-creds.json',
+    PATH_TO_CREDS: 'src/services/storage/googleSheets/secrets/google_sheets_creds.json',
 
     SPREAD_SHEET_URL: 'https://www.googleapis.com/auth/spreadsheets',
   },

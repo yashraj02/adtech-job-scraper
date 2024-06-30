@@ -1,6 +1,6 @@
 import { STORAGE_TYPE } from './constants';
-import { GoogleSheetsService } from './google-sheets/GoogleSheetsService';
-import { DataStorageFactoryModel } from './models/DataStorageFactoryModel';
+import { GoogleSheetsService } from './googleSheets/GoogleSheetsService';
+import { DataStorageFactoryModel } from './models/data-storage-factory-model';
 
 export class DataStorageFactory {
   static getStorageService(type: string, config: DataStorageFactoryModel) {

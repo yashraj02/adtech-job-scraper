@@ -1,7 +1,7 @@
 import { chromium, Page, ConsoleMessage, Browser } from 'playwright';
 import dotenv from 'dotenv';
 import { Logger } from '../../../utils/logger';
-import { QueueBrowserAutomation } from './QueueBrowserAutomation';
+import { QueueBrowserAutomation } from './queueMechanism/QueueBrowserAutomation';
 dotenv.config();
 
 export class BrowserAutomation {
@@ -13,7 +13,11 @@ export class BrowserAutomation {
   public static async navigateTo(url: string, useSharedBrowserInstance: boolean = true): Promise<Page> {
     let page;
     try {
+      Logger.consoleLog('Waiting in queue to navigating to ' + url + '...');
+
       await QueueBrowserAutomation.waitInQueue();
+
+      Logger.consoleLog('Started navigating to ' + url + '...');
 
       const browser = await this.getInstanceOfBrowser(useSharedBrowserInstance);
 
